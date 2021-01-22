@@ -4,7 +4,7 @@
 namespace waybar::modules::sway {
 
 Language::Language(const std::string& id, const Json::Value& config)
-    : ALabel(config, "language", id, "{}", 0, true) {
+    : ALabel(config, "language", id, "{language}", 0, true) {
   ipc_.subscribe(R"(["input"])");
   ipc_.signal_event.connect(sigc::mem_fun(*this, &Language::onEvent));
   ipc_.signal_cmd.connect(sigc::mem_fun(*this, &Language::onCmd));
@@ -57,7 +57,8 @@ auto Language::update() -> void {
   if (lang_.empty()) {
     event_box_.hide();
   } else {
-    label_.set_markup(fmt::format(format_, lang_));
+    label_.set_markup(fmt::format(format,
+                                  fmt::arg("language", lang_)));
     if (tooltipEnabled()) {
       label_.set_tooltip_text(lang_);
     }
